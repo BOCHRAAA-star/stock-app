@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -11,15 +10,15 @@
             value="{{ $search ?? '' }}"
             placeholder="Recherche produit..."
         >
-
         <button class="btn" type="submit">Rechercher</button>
     </form>
 
     <br>
 
-    <a class="btn" href="{{ route('products.create') }}">Ajouter produit</a>
-
-    <br><br>
+    @if(auth()->user()->isAdmin())
+        <a class="btn" href="{{ route('products.create') }}">Ajouter produit</a>
+        <br><br>
+    @endif
 
     <table>
         <thead>
@@ -42,7 +41,6 @@
                     <td>{{ $product->category?->name ?? '-' }}</td>
                     <td>{{ $product->quantity }}</td>
                     <td>{{ $product->price }} DT</td>
-
                     <td>
                         @if($product->quantity <= $product->min_quantity)
                             Stock faible
@@ -50,27 +48,21 @@
                             OK
                         @endif
                     </td>
-
                     <td>
                         <a href="{{ route('products.show', $product) }}">Voir</a>
-                        |
-                        <a href="{{ route('products.edit', $product) }}">Modifier</a>
-                        |
-                        <form
-                            action="{{ route('products.destroy', $product) }}"
-                            method="POST"
-                            style="display:inline;"
-                        >
-                            @csrf
-                            @method('DELETE')
 
-                            <button
-                                onclick="return confirm('Supprimer ce produit ?')"
-                                class="btn btn-danger"
-                            >
-                                Supprimer
-                            </button>
-                        </form>
+                        @if(auth()->user()->isAdmin())
+                            |
+                            <a href="{{ route('products.edit', $product) }}">Modifier</a>
+                            |
+                            <form action="{{ route('products.destroy', $product) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button onclick="return confirm('Supprimer ce produit ?')" class="btn btn-danger">
+                                    Supprimer
+                                </button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @endforeach

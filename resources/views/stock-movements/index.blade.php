@@ -17,6 +17,7 @@
                 <th>Type</th>
                 <th>Quantité</th>
                 <th>Note</th>
+                <th>Nom de l'utilisateur</th>
             </tr>
         </thead>
 
@@ -36,6 +37,7 @@
 
                     <td>{{ $movement->quantity }}</td>
                     <td>{{ $movement->note }}</td>
+                    <td>{{ $movement->user_name ?? '-' }}</td>
                 </tr>
             @endforeach
         </tbody>

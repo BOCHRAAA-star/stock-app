@@ -4,7 +4,7 @@
     <h1>{{ $product->name }}</h1>
 
     <a class="btn" href="{{ route('products.index') }}">← Retour</a>
-    <a class="btn" href="{{ route('products.edit', $product) }}">Modifier</a>
+
 
     <br><br>
 
@@ -35,7 +35,7 @@
                 @if($product->quantity <= $product->min_quantity)
                     ⚠️ Stock faible
                 @else
-                    ✅ OK
+                     Sûre
                 @endif
             </td>
         </tr>
