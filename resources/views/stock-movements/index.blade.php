@@ -18,6 +18,9 @@
                 <th>Quantité</th>
                 <th>Note</th>
                 <th>Nom de l'utilisateur</th>
+                @if(auth()->user()->isSuperAdmin())
+                    <th>Site</th>
+                @endif
             </tr>
         </thead>
 
@@ -38,6 +41,10 @@
                     <td>{{ $movement->quantity }}</td>
                     <td>{{ $movement->note }}</td>
                     <td>{{ $movement->user_name ?? '-' }}</td>
+
+                    @if(auth()->user()->isSuperAdmin())
+                        <td>{{ $movement->site->name ?? '-' }}</td>
+                    @endif
                 </tr>
             @endforeach
         </tbody>

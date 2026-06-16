@@ -13,6 +13,7 @@ class Product extends Model
         'quantity',
         'min_quantity',
         'price',
+        'site_id',
     ];
 
     public function category()
@@ -29,4 +30,9 @@ class Product extends Model
     {
         return $this->quantity <= $this->min_quantity;
     }
+
+    public function site()
+{
+    return $this->belongsTo(Site::class);
+}
 }

@@ -77,13 +77,17 @@
 </head>
 
 <body>
-
 <nav>
     <a href="{{ route('dashboard') }}">Dashboard</a>
     <a href="{{ route('products.index') }}">Produits</a>
 
     @if(auth()->user()->isAdmin())
         <a href="{{ route('categories.index') }}">Catégories</a>
+        <a href="{{ route('users.index') }}">Utilisateurs</a>
+    @endif
+
+    @if(auth()->user()->isSuperAdmin())
+        <a href="{{ route('sites.index') }}">Sites</a>
     @endif
 
     <a href="{{ route('stock-movements.index') }}">Mouvements</a>

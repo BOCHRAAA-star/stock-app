@@ -12,10 +12,16 @@ class StockMovement extends Model
         'quantity',
         'note',
         'user_name',
+        'site_id',
     ];
 
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
     }
 }

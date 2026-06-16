@@ -10,15 +10,21 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-      
         $search = $request->input('search');
-        $products = Product::with('category')
+
+        $query = Product::with('category')
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('reference', 'like', "%{$search}%");
             })
-            ->latest()
-            ->paginate(10);
+            ->latest();
+
+        // Super admin sees all products. Everyone else sees only their site's products.
+        if (!auth()->user()->isSuperAdmin()) {
+            $query->where('site_id', auth()->user()->site_id);
+        }
+
+        $products = $query->paginate(10);
 
         return view('products.index', compact('products', 'search'));
     }
@@ -32,18 +38,18 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'category_id' => ['nullable', 'exists:categories,id'],
-            'name'        => ['required', 'string', 'max:255'],
-            'reference'   => ['required', 'string', 'max:100', 'unique:products,reference'],
-            'quantity'    => ['required', 'integer', 'min:0'],
-            'min_quantity'=> ['required', 'integer', 'min:0'],
-            'price'       => ['required', 'numeric', 'min:0'],
-        ]
+            'category_id'  => ['nullable', 'exists:categories,id'],
+            'name'         => ['required', 'string', 'max:255'],
+            'reference'    => ['required', 'string', 'max:100', 'unique:products,reference'],
+            'quantity'     => ['required', 'integer', 'min:0'],
+            'min_quantity' => ['required', 'integer', 'min:0'],
+            'price'        => ['required', 'numeric', 'min:0'],
+        ]);
 
-        );
+        // Automatically assign the product to the logged-in user's site
+        $data['site_id'] = auth()->user()->site_id;
 
         Product::create($data);
-
 
         return redirect()
             ->route('products.index')
@@ -65,12 +71,12 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $data = $request->validate([
-            'category_id' => ['nullable', 'exists:categories,id'],
-            'name'        => ['required', 'string', 'max:255'],
-            'reference'   => ['required', 'string', 'max:100', 'unique:products,reference,' . $product->id],
-            'quantity'    => ['required', 'integer', 'min:0'],
-            'min_quantity'=> ['required', 'integer', 'min:0'],
-            'price'       => ['required', 'numeric', 'min:0'],
+            'category_id'  => ['nullable', 'exists:categories,id'],
+            'name'         => ['required', 'string', 'max:255'],
+            'reference'    => ['required', 'string', 'max:100', 'unique:products,reference,' . $product->id],
+            'quantity'     => ['required', 'integer', 'min:0'],
+            'min_quantity' => ['required', 'integer', 'min:0'],
+            'price'        => ['required', 'numeric', 'min:0'],
         ]);
 
         $product->update($data);

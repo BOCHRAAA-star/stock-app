@@ -9,15 +9,19 @@ class DashboardController extends Controller
 {
     public function index()
 {
-    $productsCount   = Product::count();
-    $lowStockCount   = Product::whereColumn('quantity', '<=', 'min_quantity')->count();
-    $movementsCount  = StockMovement::count();
-    $lowStockProducts = Product::whereColumn('quantity', '<=', 'min_quantity')->latest()->take(5)->get();
+    $productsCount = \App\Models\Product::count();
 
-    if (auth()->user()->isAdmin()) {
-        return view('dashboard', compact('productsCount', 'lowStockCount', 'movementsCount', 'lowStockProducts'));
+    // Calculate low stock items based on your threshold logic
+    $lowStockProducts = \App\Models\Product::whereRaw('quantity <= min_quantity')->get();
+    $lowStockCount = $lowStockProducts->count();
+
+    // Context-filtered movement counter
+    if (auth()->user()->role === 'admin') {
+        $movementsCount = \App\Models\StockMovement::count();
+    } else {
+        $movementsCount = \App\Models\StockMovement::where('user_name', auth()->user()->name)->count();
     }
 
-    return view('dashboard-user', compact('productsCount', 'lowStockCount', 'movementsCount'));
+    return view('dashboard', compact('productsCount', 'lowStockCount', 'movementsCount', 'lowStockProducts'));
 }
 }

@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role' ,
+        'site_id' ,
     ];
 
     /**
@@ -51,5 +52,16 @@ class User extends Authenticatable
    {
     return $this->role === 'admin';
    }
+
+   public function isSuperAdmin(): bool
+{
+    return $this->role === 'super_admin';
+}
+
+public function site()
+{
+    return $this->belongsTo(Site::class);
+}
+
 
 }
