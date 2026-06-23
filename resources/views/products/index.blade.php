@@ -6,7 +6,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h1 style="margin: 0; font-size: 1.75rem; color: #333;">Produits</h1>
 
-        @if(auth()->user()->role === 'admin')
+        @if(auth()->user()->role === 'super-admin' )
             <a class="btn" href="{{ route('products.create') }}" style="background: #0d6efd; color: white; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">
                 + Ajouter produit
             </a>

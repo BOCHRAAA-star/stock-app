@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\UserController;
+
 use App\Models\User;
 use App\Models\Site;
 use Illuminate\Http\Request;
@@ -10,10 +12,18 @@ use Illuminate\Validation\Rules;
 
 class UserController extends Controller
 {
-    // 1. List all users for the admin
+    // 1. List users — super_admin sees everyone, regular admin sees only their own site's "user" role accounts
     public function index()
     {
-        $users = User::with('site')->latest()->paginate(10);
+        $query = User::with('site')->latest();
+
+        if (!auth()->user()->isSuperAdmin()) {
+            $query->where('role', 'user')
+                  ->where('site_id', auth()->user()->site_id);
+        }
+
+        $users = $query->paginate(10);
+
         return view('admin.users.index', compact('users'));
     }
 

@@ -2,7 +2,10 @@
 
 @section('content')
     <h2>Catégories</h2>
-    <a href="{{ route('categories.create') }}" class="btn">+ Ajouter</a>
+
+     @if(auth()->user()->isSuperAdmin())
+        <a href="{{ route('categories.create') }}" class="btn">+ Ajouter</a>
+    @endif
 
     <table style="margin-top:15px;">
         <thead>

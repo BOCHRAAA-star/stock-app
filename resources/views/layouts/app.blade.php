@@ -81,7 +81,7 @@
     <a href="{{ route('dashboard') }}">Dashboard</a>
     <a href="{{ route('products.index') }}">Produits</a>
 
-    @if(auth()->user()->isAdmin())
+    @if(auth()->user()->isAdmin() || auth()->user()->isSuperAdmin())
         <a href="{{ route('categories.index') }}">Catégories</a>
         <a href="{{ route('users.index') }}">Utilisateurs</a>
     @endif

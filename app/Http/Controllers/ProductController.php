@@ -9,26 +9,20 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->input('search');
+{
+    $search = $request->input('search');
 
-        $query = Product::with('category')
-            ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('reference', 'like', "%{$search}%");
-            })
-            ->latest();
+    $query = Product::with('category')
+        ->when($search, function ($query, $search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('reference', 'like', "%{$search}%");
+        })
+        ->latest();
 
-        // Super admin sees all products. Everyone else sees only their site's products.
-        if (!auth()->user()->isSuperAdmin()) {
-            $query->where('site_id', auth()->user()->site_id);
-        }
+    $products = $query->paginate(10);
 
-        $products = $query->paginate(10);
-
-        return view('products.index', compact('products', 'search'));
-    }
-
+    return view('products.index', compact('products', 'search'));
+}
     public function create()
     {
         $categories = Category::orderBy('name')->get();
